@@ -13,6 +13,7 @@ import "colors";
 const port = PORT;
 
 const main = async () => {
+  console.log("Start Auth");
   if (MONGO_HOST === undefined) {
     console.log(`MONGO_HOST environment variable is required`);
   }
