@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets
+  template:
+    metadata:
+      labels:
+        app: tickets
+    spec:
+      containers:
+        - name: tickets
+          image: mh10445/new-k8s-tickets:latest
+          imagePullPolicy: Never
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4000
+          ports:
+            - containerPort: 4000
+          env:
+            - name: PORT
+              value: '4000'
+            - name: MONGO_HOST
+              value: tickets-mongo-srv
+            - name: MONGO_PORT
+              value: '27017'
+            - name: MONGO_DB
+              value: tickets
+            - name: JWT_EXPIRES_IN
+              value: '2d'
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: jwtsecret
+            - name: NATS_CLUSTER_ID
+              value: 'ticketing'
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_HOST
+              value: nats-srv
+            - name: NATS_PORT
+              value: '4222'

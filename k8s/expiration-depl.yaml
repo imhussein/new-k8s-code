@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expiration-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expiration
+  template:
+    metadata:
+      labels:
+        app: expiration
+    spec:
+      containers:
+        - name: expiration
+          image: mh10445/new-k8s-expiration:latest
+          imagePullPolicy: Never
+          env:
+            - name: PORT
+              value: '4000'
+            - name: MONGO_HOST
+              value: expiration-mongo-srv
+            - name: MONGO_PORT
+              value: '27017'
+            - name: MONGO_DB
+              value: expiration
+            - name: JWT_EXPIRES_IN
+              value: '2d'
+            - name: REDIS_HOST
+              value: redis-srv
+            - name: REDIS_PORT
+              value: '6379'
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: JWT_SECRET
+                  name: jwtsecret
+            - name: NATS_CLUSTER_ID
+              value: "ticketing"
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_HOST
+              value: nats-srv
+            - name: NATS_PORT
+              value: '4222'
+            - name: EXPIRATION_DATE
+              value: '900'

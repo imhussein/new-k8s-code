@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tickets-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tickets-mongo
+  template:
+    metadata:
+      labels:
+        app: tickets-mongo
+    spec:
+      volumes:
+        - name: tickets-mongo-pvc
+          persistentVolumeClaim:
+            claimName: tickets-mongo-pvc
+      containers:
+        - name: tickets-mongo
+          imagePullPolicy: Always
+          image: mongo
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: /data/db
+              name: tickets-mongo-pvc

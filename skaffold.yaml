@@ -1,0 +1,50 @@
+apiVersion: skaffold/v2beta8
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - "./k8s/*"
+build:
+  local:
+    push: false
+  artifacts:
+    - image: mh10445/new-k8s-auth
+      context: auth
+      docker:
+        dockerfile: auth.dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src/**/*.ts'
+    - image: mh10445/new-k8s-tickets
+      context: tickets
+      docker:
+        dockerfile: tickets.dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src/**/*.ts'
+    - image: mh10445/new-k8s-orders
+      context: orders
+      docker:
+        dockerfile: orders.dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src/**/*.ts'
+    - image: mh10445/new-k8s-expiration
+      context: expiration
+      docker:
+        dockerfile: expiration.dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './src/**/*.ts'
+    - image: mh10445/new-k8s-client
+      context: client
+      docker:
+        dockerfile: client.dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: './**/*.tsx'
