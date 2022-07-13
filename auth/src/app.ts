@@ -19,9 +19,9 @@ app.use(
   })
 );
 app.use(cors());
-// if (process.env.NODE_ENV !== "test") {
-//   app.use(morgan("combined"));
-// }
+if (process.env.NODE_ENV !== "test") {
+  app.use(morgan("combined"));
+}
 
 app.get("/", healthCheckMiddleware);
 
